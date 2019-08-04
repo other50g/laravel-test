@@ -1,0 +1,22 @@
+version: "3"
+services:
+  nginx:
+    build: ./nginx
+    ports: 
+      - "80:80"
+    depends_on:
+      - app
+  app:
+    build: ./app
+    depends_on: 
+      - db
+    volumes:
+      - ./app:/app
+  db:
+    build: ./mysql
+    ports:
+      - "33306:3306"
+    restart: always
+    environment:
+        MYSQL_DATABASE: sample_db
+        MYSQL_ROOT_PASSWORD: password
