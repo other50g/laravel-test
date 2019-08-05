@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\AppController;
 
 use App\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends AppController
 {
@@ -52,6 +54,8 @@ class UsersController extends AppController
     {
         //
         $data = $request->all();
+
+        $data['password'] = Hash::make($data['password']);
 
         $request->validated();
 
@@ -102,5 +106,25 @@ class UsersController extends AppController
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * ログイン処理
+     */
+    public function login()
+    {
+        $credentials = request(['email', 'password']);
+
+        if (!$token = auth('api')->attempt($credentials)) {
+            throw new UnauthorizedException('ログインに失敗しました。', 401);
+        }
+
+        $data = [
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expire_in' => auth('api')->factory()->getTTL() * 60,
+        ];
+
+        return response()->success($data);
     }
 }
