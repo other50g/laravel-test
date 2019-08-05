@@ -13,7 +13,24 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN pecl install xdebug
 
+# SQLServer Driver
+RUN apt-get install -my wget gnupg
+RUN curl -O -fsSL https://packages.microsoft.com/keys/microsoft.asc
+RUN apt-key add microsoft.asc
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+ENV ACCEPT_EULA=Y
+RUN apt-get install -y msodbcsql17
+RUN apt-get install -y mssql-tools
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+RUN apt-get install -y unixodbc-dev
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
+
 ADD ./conf/php.ini /usr/local/etc/php/
 ADD ./conf/xdebug.ini /usr/local/etc/php/conf.d/
+ADD ./conf/20-sqlsrv.ini /usr/local/etc/php/conf.d/
+ADD ./conf/30-pdo_sqlsrv.ini /usr/local/etc/php/conf.d/
 
 WORKDIR /app
