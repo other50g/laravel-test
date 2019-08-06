@@ -8,15 +8,12 @@ use Illuminate\Contracts\Validation\Validator;
 
 abstract class ApiRequest extends FormRequest
 {
-    protected function failedValidation(Validator $validator): void
+    protected function failedValidation(Validator $validator)
     {
-        $data = [
-            'data' => [],
-            'status' => 'error',
-            'summary' => 'Failed validation.',
-            'errors' => $validator->errors()->toArray()
-        ];
-
-        throw new HttpResponseException(response()->json($data, 422));
+        return response()->error(
+            '登録に失敗しました。入力内容を確認してください。',
+            $validator->errors()->toArray(),
+            422
+        );
     }
 }

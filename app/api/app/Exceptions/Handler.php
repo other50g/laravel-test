@@ -4,6 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
+use App\Providers\ResponseApiServiceProvider;
 
 class Handler extends ExceptionHandler
 {
@@ -46,20 +51,39 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->is('ajax/*') || $request->is('api/*') || $request->ajax()) {
-            $status = 400;
-            if ($this->isHttpException($exception)) {
-                $status = $exception->getCode();
-            }
+        $e = $this->prepareException($exception);
 
-            return response()->json([
-                'data' => [],
-                'status' => 'error',
-                'errors' => $exception->getMessage(),
-                'trace' => $exception->getTrace(),
-            ], $status);
+        if ($e instanceof HttpResponseException) {
+            return $e->getResponse();
+        } elseif ($e instanceof AuthenticationException) {
+            $status = Response::HTTP_UNAUTHORIZED;
+            $message = '認証に失敗しました。ログインしてください。';
+            $errors = [];
+            $trace = [];
+        } elseif ($e instanceof ValidationException) {
+            $status = $e->status;
+            $message = Response::$statusTexts[$status];
+            $errors = $e->errors();
+            $trace = [];
+        } elseif ($this->isHttpException($e)) {
+            $status = $e->getCode();
+            $message = (isset(Response::$statusTexts[$status])) ? Response::$statusTexts[$status] : '';
+            $errors = [];
+            $trace = [];
+        } else {
+            $status = env('APP_DEBUG', true) ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = env('APP_DEBUG', true) ? $e->getMessage() : 'サーバエラーが発生しました。管理者に連絡してください。';
+            $errors = [];
+            $trace = env('APP_DEBUG', true) ? $e->getTrace() : [];
         }
 
-        return parent::render($request, $exception);
+        // ResponseApiServiceProviderが実行される前にエラーが発生した場合の対応
+        if (!method_exists(response(), 'error')) {
+            $app = app();
+            $provide = new ResponseApiServiceProvider($app);
+            $provide->boot();
+        }
+
+        return response()->error($message, $errors, $trace, $status);
     }
 }
