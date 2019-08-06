@@ -13,6 +13,7 @@ abstract class ApiRequest extends FormRequest
         return response()->error(
             '登録に失敗しました。入力内容を確認してください。',
             $validator->errors()->toArray(),
+            [],
             422
         );
     }

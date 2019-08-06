@@ -19,4 +19,5 @@ Route::group(['middleware' => 'guest:api'], function() {
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::resource('users', 'Api\UsersController');
+    Route::resource('groups', 'Api\GroupsController');
 });

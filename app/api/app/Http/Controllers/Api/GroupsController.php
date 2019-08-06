@@ -3,20 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\UsersRequest;
-use App\Http\Controllers\Api\AppController;
+use App\Http\Controllers\Controller;
+use App\Group;
+use App\Http\Requests\GroupsRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use App\User;
-use Illuminate\Validation\UnauthorizedException;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
-
-class UsersController extends AppController
+class GroupsController extends Controller
 {
-    protected $users;
-
+    protected $groups;
     public function __construct()
     {
-        $this->users = new User();
+        $this->groups = new Group();
     }
 
     /**
@@ -27,9 +24,8 @@ class UsersController extends AppController
     public function index()
     {
         //
-        $users = $this->users->all();
-
-        return response()->success($users);
+        $groups = $this->groups->all()->toTree();
+        return response()->success('', $groups);
     }
 
     /**
@@ -40,7 +36,6 @@ class UsersController extends AppController
     public function create()
     {
         //
-
     }
 
     /**
@@ -49,15 +44,14 @@ class UsersController extends AppController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UsersRequest $request)
+    public function store(GroupsRequest $request)
     {
         //
         $data = $request->all();
-
         $request->validated();
+        $group = $this->groups->create($data);
 
-        $user = $this->users->create($data);
-        return response()->success('追加に成功しました。', $user);
+        return response()->success('追加に成功しました。', $group);
     }
 
     /**
@@ -103,33 +97,5 @@ class UsersController extends AppController
     public function destroy($id)
     {
         //
-        $user = $this->users->all()->find($id);
-        if ($user == null) {
-            throw new NotFoundResourceException('ユーザーが見つかりませんでした', 404);
-        }
-
-        $user->delete();
-
-        return response()->success('削除に成功しました');
-    }
-
-    /**
-     * ログイン処理
-     */
-    public function login()
-    {
-        $credentials = request(['email', 'password']);
-
-        if (!$token = auth('api')->attempt($credentials)) {
-            throw new UnauthorizedException('ログインに失敗しました。', 401);
-        }
-
-        $data = [
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expire_in' => auth('api')->factory()->getTTL() * 6000,
-        ];
-
-        return response()->success($data);
     }
 }

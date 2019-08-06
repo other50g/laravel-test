@@ -67,6 +67,9 @@ class Handler extends ExceptionHandler
             $trace = [];
         } elseif ($this->isHttpException($e)) {
             $status = $e->getCode();
+            if ($status == 0) {
+                $status = 400;
+            }
             $message = (isset(Response::$statusTexts[$status])) ? Response::$statusTexts[$status] : '';
             $errors = [];
             $trace = [];
