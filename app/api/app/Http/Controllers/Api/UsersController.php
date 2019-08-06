@@ -7,9 +7,7 @@ use App\Http\Requests\UsersRequest;
 use App\Http\Controllers\Api\AppController;
 
 use App\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Validation\UnauthorizedException;
-use Illuminate\Support\Facades\Hash;
 
 class UsersController extends AppController
 {
@@ -54,8 +52,6 @@ class UsersController extends AppController
     {
         //
         $data = $request->all();
-
-        $data['password'] = Hash::make($data['password']);
 
         $request->validated();
 
