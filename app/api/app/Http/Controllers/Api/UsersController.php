@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AppController;
 
 use App\User;
 use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class UsersController extends AppController
 {
@@ -56,7 +57,7 @@ class UsersController extends AppController
         $request->validated();
 
         $user = $this->users->create($data);
-        return response()->success($user);
+        return response()->success('追加に成功しました。', $user);
     }
 
     /**
@@ -102,6 +103,14 @@ class UsersController extends AppController
     public function destroy($id)
     {
         //
+        $user = $this->users->all()->find($id);
+        if ($user == null) {
+            throw new NotFoundResourceException('ユーザーが見つかりませんでした', 404);
+        }
+
+        $user->delete();
+
+        return response()->success('削除に成功しました');
     }
 
     /**
