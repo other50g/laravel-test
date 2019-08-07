@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Group;
+use App\Models\Group;
 use App\Http\Requests\GroupsRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

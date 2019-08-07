@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\User;
+use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Faker\Generator as Faker;
 
@@ -28,7 +28,28 @@ class UsersControllerTest extends TestCase
 
         $response = $this->json('GET', '/api/users', $params, $headers);
 
-        print_r($response->decodeResponseJson());
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+        ]);
+    }
+
+    public function testCreate()
+    {
+
+    }
+
+    public function testStore()
+    {
+        $user = factory(User::class)->create();
+        $headers = ['Authorization' => 'Bearer ' . JWTAuth::fromUser($user)];
+
+        $data = [
+            'name' => 'テスト',
+            'password' => 'test',
+            'email' => 'test@test.com'
+        ];
+        $response = $this->json('POST', '/api/users', $data, $headers);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -36,23 +57,32 @@ class UsersControllerTest extends TestCase
         ]);
     }
 
-    // public function testCreate()
-    // {
-    //     $data = [
-    //         'name' => 'テスト',
-    //         'password' => 'test',
-    //         'email' => 'test@test.com'
-    //     ];
-    //     $response = $this->json('POST', '/api/users', $data);
+    public function testShow()
+    {
+        $user = factory(User::class)->create();
+        $headers = ['Authorization' => 'Bearer ' . JWTAuth::fromUser($user)];
 
-    //     $response->assertStatus(200);
-    // }
+        $response = $this->json('GET', '/api/users/'.$user->id, [], $headers);
 
-    // public function testLogin()
-    // {
-    //     $user_name = 'TEST USER';
-    //     $user = factory(Uesr::class)->create(['name' => $user_name]);
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+        ]);
+    }
 
-    //     $response = $this->json('POST', '/api/login');
-    // }
+    public function testLogin()
+    {
+        $password = 'password';
+        $user = factory(User::class)->create(['password' => $password]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => $user->email,
+            'password' => $password
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success'
+        ]);
+    }
 }

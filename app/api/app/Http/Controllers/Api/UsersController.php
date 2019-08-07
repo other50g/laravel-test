@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UsersRequest;
 use App\Http\Controllers\Api\AppController;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
@@ -27,7 +27,7 @@ class UsersController extends AppController
     public function index()
     {
         //
-        $users = $this->users->all();
+        $users = $this->users->query()->paginate(10);
 
         return response()->success('', $users);
     }
@@ -69,6 +69,9 @@ class UsersController extends AppController
     public function show($id)
     {
         //
+        $user = $this->users->findOrFail($id);
+
+        return response()->success('', $user);
     }
 
     /**
@@ -103,10 +106,7 @@ class UsersController extends AppController
     public function destroy($id)
     {
         //
-        $user = $this->users->all()->find($id);
-        if ($user == null) {
-            throw new NotFoundResourceException('ユーザーが見つかりませんでした', 404);
-        }
+        $user = $this->users->findOrFail($id);
 
         $user->delete();
 

@@ -32,7 +32,6 @@ class GroupsRequest extends FormRequest
     {
         return [
             'name' => 'グループ名',
-            'parent_id' => '親グループ'
         ];
     }
 }
