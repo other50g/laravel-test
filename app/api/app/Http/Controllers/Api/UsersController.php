@@ -92,9 +92,16 @@ class UsersController extends AppController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UsersRequest $request, $id)
     {
         //
+        $data = $request->all();
+        $request->validated();
+
+        $user = $this->users->findOrFail($id);
+        $user->update($data);
+
+        return response()->success('更新に成功しました。', $user);
     }
 
     /**
