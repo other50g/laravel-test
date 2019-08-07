@@ -29,7 +29,7 @@ class UsersController extends AppController
         //
         $users = $this->users->all();
 
-        return response()->success($users);
+        return response()->success('', $users);
     }
 
     /**

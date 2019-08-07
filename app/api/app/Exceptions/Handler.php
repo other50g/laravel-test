@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
             if ($status == 0) {
                 $status = 400;
             }
-            $message = (isset(Response::$statusTexts[$status])) ? Response::$statusTexts[$status] : '';
+            $message = $e->getMessage();
             $errors = [];
             $trace = [];
         } else {
