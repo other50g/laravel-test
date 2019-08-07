@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'group_id',
     ];
 
     /**
@@ -45,6 +45,11 @@ class User extends Authenticatable implements JWTSubject
     protected $dates = [
         'deleted_at'
     ];
+
+    public function group()
+    {
+        return $this->belongsTo('App\Models\Group');
+    }
 
     /**
      * パスワードをハッシュ化

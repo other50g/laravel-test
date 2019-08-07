@@ -27,7 +27,7 @@ class UsersController extends AppController
     public function index()
     {
         //
-        $users = $this->users->query()->paginate(10);
+        $users = $this->users->with(['group'])->paginate(10);
 
         return response()->success('', $users);
     }
