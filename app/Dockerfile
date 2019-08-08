@@ -28,6 +28,11 @@ RUN apt-get install -y unixodbc-dev
 RUN pecl install sqlsrv
 RUN pecl install pdo_sqlsrv
 
+# Node.js
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
+
 ADD ./conf/php.ini /usr/local/etc/php/
 ADD ./conf/xdebug.ini /usr/local/etc/php/conf.d/
 ADD ./conf/20-sqlsrv.ini /usr/local/etc/php/conf.d/
