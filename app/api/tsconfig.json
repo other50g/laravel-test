@@ -16,6 +16,9 @@
       ]
     },
     "include": [
-      "resources/assets/ts/**/*"
+      "resources/assets/ts/**/*",
+      "resources/assets/ts/**/*.ts",
+      "resources/assets/ts/**/*.tsx",
+      "resources/assets/ts/**/*.vue",
     ]
   }

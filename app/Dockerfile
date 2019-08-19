@@ -33,6 +33,9 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y npm
 
+# Laravel echo server
+RUN npm install -g laravel-echo-server
+
 ADD ./conf/php.ini /usr/local/etc/php/
 ADD ./conf/xdebug.ini /usr/local/etc/php/conf.d/
 ADD ./conf/20-sqlsrv.ini /usr/local/etc/php/conf.d/

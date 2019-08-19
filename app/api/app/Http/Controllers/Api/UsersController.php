@@ -10,6 +10,8 @@ use App\Models\User;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
+use App\Events\SampleEvent;
+
 class UsersController extends AppController
 {
     protected $users;
@@ -28,6 +30,9 @@ class UsersController extends AppController
     {
         //
         $users = $this->users->with(['group'])->paginate(10);
+
+        // イベントの発火
+        event(new \App\Events\SampleEvent());
 
         return response()->success('', $users);
     }

@@ -30,5 +30,13 @@
 5. ホットリロードを起動
    1. `npm run watch`
 
+## BroadCast（Socket.io）
+1. コンテナ内に`bash`でログイン
+   1. `docker-compose exec app bash`
+2. `app`ディレクトリにいるので、プロジェクトフォルダに移動
+   1. `cd api`
+3. `laravel-echo-server`の起動
+   1. `laravel-echo-server start`
+
 # TODO
 * どうせやるならコマンドですべて起動するようにしたい。

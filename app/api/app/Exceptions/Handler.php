@@ -74,7 +74,11 @@ class Handler extends ExceptionHandler
             $errors = [];
             $trace = [];
         } else {
-            $status = env('APP_DEBUG', true) ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            $code = env('APP_DEBUG', true) ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            if (isset($code)) {
+                $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+            }
+            $status = $code;
             $message = env('APP_DEBUG', true) ? $e->getMessage() : 'サーバエラーが発生しました。管理者に連絡してください。';
             $errors = [];
             $trace = env('APP_DEBUG', true) ? $e->getTrace() : [];

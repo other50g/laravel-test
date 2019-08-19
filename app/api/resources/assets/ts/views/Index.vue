@@ -3,6 +3,8 @@
     <h1>Hello World!</h1>
     <h2>This is test page!!</h2>
     <h3>Hot reload test!</h3>
+    <h4>AAAAAA</h4>
+    <h5>BBBBBB</h5>
   </div>
 </template>
 
