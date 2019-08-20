@@ -15,14 +15,19 @@ class SampleEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * @var string メッセージ
+     */
+    protected $message;
+
+    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($message = null)
     {
         //
-
+        $this->message = $message;
     }
 
     /**
@@ -38,7 +43,7 @@ class SampleEvent implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'message' => 'SAMPLE'
+            'message' => $this->message
         ];
     }
 }

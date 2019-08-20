@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => 'guest:api'], function() {
     Route::post('/login', 'Api\UsersController@login');
+    Route::get('/queue', 'Api\SampleController@execute');
 });
 
 Route::group(['middleware' => ['auth:api']], function() {

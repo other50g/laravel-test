@@ -35,6 +35,7 @@ RUN apt-get install -y npm
 
 # Laravel echo server
 RUN npm install -g laravel-echo-server
+# RUN npm install -g pm2
 
 ADD ./conf/php.ini /usr/local/etc/php/
 ADD ./conf/xdebug.ini /usr/local/etc/php/conf.d/
